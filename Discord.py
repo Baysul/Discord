@@ -1,4 +1,3 @@
-#-*- coding: utf-8 -*-
 import sys
 reload(sys)
 sys.setdefaultencoding("utf-8")
@@ -96,14 +95,11 @@ class Discord(IRCClient):
 				file, ext = os.path.splitext(self.magicFile)
 				os.remove("{0}-pickled{1}".format(file, ext))
 
-				self.markovGenerator = pymarkov.MarkovChainGenerator(self.magicFile)
-
-				# self.markovGenerator.populate_dict(self.magicFile)
+				# Simply re-populating the dictionary isn't enough for some reason
+				self.markovGenerator = pymarkov.MarkovChainGenerator(self.magicFile, 4)
 
 			except IOError as ex:
 				self.logger.error("Unable to delete pickled file. {0}".format(ex.message))			
-
-			# deferToThread(self.markovGenerator.populate_dict, self.magicFile).addCallback(lambda x: x)
 
 		except Exception as ex:
 			self.logger.error("Unable to insert phrase into magic file! {0}".format(ex.message))
@@ -149,8 +145,6 @@ class Discord(IRCClient):
 			try:
 				randomPhrase = self.markovGenerator.generate_sentence().strip(self.nickname)
 
-				print randomPhrase
-
 				if self.nickname in message and channel.startswith("#") and self.channelPhrasers[channel].running:
 					phrase = "{0}, {1}".format(senderNickname, randomPhrase)
 
@@ -194,7 +188,7 @@ class Discord(IRCClient):
 			self.say(channel, randomPhrase)
 
 		except IndexError:
-			pass  # Phrases aren't ready yet
+			pass  # Out of range error (doesn't matter anymore)
 
 
 scriptFile, ircAddress, ircPort = sys.argv
