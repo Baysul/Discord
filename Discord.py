@@ -96,7 +96,7 @@ class Discord(IRCClient):
 				os.remove("{0}-pickled{1}".format(file, ext))
 
 				# Simply re-populating the dictionary isn't enough for some reason
-				self.markovGenerator = pymarkov.MarkovChainGenerator(self.magicFile, 4)
+				self.markovGenerator = pymarkov.MarkovChainGenerator(self.magicFile, 2)
 
 			except IOError as ex:
 				self.logger.error("Unable to delete pickled file. {0}".format(ex.message))			
@@ -125,8 +125,8 @@ class Discord(IRCClient):
 				commandsModule = reload(Commands)
 				self.commands = commandsModule.Commands(self)
 
-			except Exception as e:
-				self.say(channel, "Failed to load commands module - {0}".format(e.message))
+			except Exception as ex:
+				self.say(channel, "Failed to load commands module - {0}".format(ex.message))
 
 		elif message.startswith("~"):
 			# Don't log commands to the brain
@@ -187,9 +187,8 @@ class Discord(IRCClient):
 			randomPhrase = self.markovGenerator.generate_sentence()
 			self.say(channel, randomPhrase)
 
-		except IndexError:
-			pass  # Out of range error (doesn't matter anymore)
-
+		except (IndexError, ValueError) as ex:
+			self.logger.error(ex.message)
 
 scriptFile, ircAddress, ircPort = sys.argv
 
