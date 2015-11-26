@@ -100,29 +100,6 @@ class Commands(object):
 			channelToJoin = args[0]
 			self.bot.join(channelToJoin)
 
-	def handleRemove(self, user, channel, args):
-		nickname = user.split("!")[0].lower()
-
-		if nickname not in self.bot.accessList:
-			self.bot.msg(nickname, "You are not authorized to perform that command.")
-
-		else:
-			try:
-				command = args[0].lower()
-			
-				if command == "access":
-					accessNickname = args[1].lower()
-
-					self.bot.accessList.remove(accessNickname)
-
-				elif command == "phraser":
-					phraserChannel = args[1]
-
-					self.bot.channelPhrasers[phraserChannel].stop()
-
-			except IndexError:
-				self.bot.say(channel, "You're missing an argument (or several).")
-
 	def handlePing(self, user, channel, args):
 		self.bot.logger.debug("Handling PING command")
 
