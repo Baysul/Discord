@@ -1,0 +1,3 @@
+[submodule "pymarkov"]
+	path = pymarkov
+	url = https://github.com/denisgarci/pymarkov.git
