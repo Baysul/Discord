@@ -143,7 +143,7 @@ class Discord(IRCClient):
 			self.insertPhrase(brainMessage)
 
 			try:
-				randomPhrase = self.markovGenerator.generate_sentence().strip(self.nickname)
+				randomPhrase = self.generateSentence()
 
 				if self.nickname in message and channel.startswith("#") and self.channelPhrasers[channel].running:
 					phrase = "{0}, {1}".format(senderNickname, randomPhrase)
@@ -182,13 +182,21 @@ class Discord(IRCClient):
 
 		self.channelPhrasers[channel] = channelPhraser
 
-	def sayRandomPhrase(self, channel):
+	def generateSentence(self):
 		try:
-			randomPhrase = self.markovGenerator.generate_sentence()
-			self.say(channel, randomPhrase)
+			sentence = self.markovGenerator.generate_sentence()
+
+			sentence = sentence.strip("<{0}>".format(self.nickname))
+			sentence = sentence.strip(self.nickname)
+
+			return sentence
 
 		except (IndexError, ValueError) as ex:
 			self.logger.error(ex.message)
+
+	def sayRandomPhrase(self, channel):
+		sentence = self.generateSentence()
+		self.say(channel, sentence)
 
 scriptFile, ircAddress, ircPort = sys.argv
 
