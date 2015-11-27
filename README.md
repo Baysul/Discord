@@ -28,5 +28,5 @@ You can't really "configure" anything at the moment. You change the bot's nickna
 
 ## Todo
 - [ ] Implement configuration and [SQLite](https://docs.python.org/2/library/sqlite3.html).
-- [ ] Fix white-spaces before punctuation.
+- [x] Fix white-spaces before punctuation.
 - [ ] Define logger property in **Commands** module (maybe use self.bot's?)
